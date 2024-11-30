@@ -26,14 +26,14 @@ Implementation method:
 '''
 
 import random, time, copy
-
+import sys
 
 
 #-- CONSTANTS --#
 
 SEED = 42       # Seed
 
-N = 10           # Number of rows
+R = 10           # Number of rows
 C = 50           # Number of columns
 
 DEAD = 0        # Value for Dead cells
@@ -54,7 +54,7 @@ def number_of_neighbours(matrix, i, j):
     
     for dr, dc in directions:
         ni, nj = i + dr, j + dc
-        if 0 <= ni < N and 0 <= nj < C:
+        if 0 <= ni < R and 0 <= nj < C:
             if matrix[ni][nj] == 1:
                 num_neighbours += 1
 
@@ -77,7 +77,7 @@ def liveability_cell(cell, nn):
 #-- MAIN FUNCTIONS --#
 
 def next_generation(matrix):
-    for i in range(N):
+    for i in range(R):
         for j in range(C):
             num_neighbours = number_of_neighbours(matrix, i, j)
             matrix[i][j] = liveability_cell(matrix[i][j], num_neighbours)
@@ -86,25 +86,42 @@ def next_generation(matrix):
 
 def print_cells(matrix):
     matrix_chars=""
-    for i in range(N):
+    for i in range(R):
         line = ""
 
         for j in range(C):
             line += "•" if matrix[i][j] else " "
 
-        matrix_chars += line + ("\n" if i < N else "")
+        matrix_chars += line + ("\n" if i < R else "")
 
     print()
     print(matrix_chars, end='', flush=True)
 
+
+def constant_setter():
+    global SEED, R, C
+
+    try:
+        if "-s" in sys.argv:
+            SEED = int(sys.argv[sys.argv.index("-s") + 1])
+        if "-r" in sys.argv:
+            R = int(sys.argv[sys.argv.index("-r") + 1])
+        if "-c" in sys.argv:
+            C = int(sys.argv[sys.argv.index("-c") + 1])
+    except:
+        print("Usage: python3 game_of_life.py [-seed (int)] [-r (int)] [-c (int)]")
 
 
 #-- main() --#
 
 if __name__ == "__main__":
 
+    constant_setter()
+
+    print(f'SEED= {SEED}, ROWS= {R}, COLUMNS= {C}\n')
+
     random.seed(SEED)
-    matrix = [[random.randint(0, 2) for _ in range(C)] for _ in range(N)]
+    matrix = [[random.randint(0, 2) for _ in range(C)] for _ in range(R)]
     previous_matrix = copy.deepcopy(matrix)
 
     while(1):
@@ -117,5 +134,5 @@ if __name__ == "__main__":
             break
         else:
             previous_matrix = copy.deepcopy(matrix)
-            print("\033[F" * (N+1), end='')
+            print("\033[F" * (R+1), end='')
 
