@@ -26,7 +26,7 @@ Implementation method:
 '''
 
 import random, time, copy
-import sys
+import sys, os
 
 
 #-- CONSTANTS --#
@@ -118,6 +118,7 @@ if __name__ == "__main__":
 
     constant_setter()
 
+    os.system('cls' if os.name == "nt" else "clear")
     print(f'SEED= {SEED}, ROWS= {R}, COLUMNS= {C}\n')
 
     random.seed(SEED)
